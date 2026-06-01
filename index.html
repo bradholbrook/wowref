@@ -2,24 +2,61 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0e1a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>wowref</title>
   <meta name="description" content="wowref — WoW reference." />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
+<!-- Background gradient blobs — glass needs visual complexity behind it -->
+<div class="bg-blobs" aria-hidden="true">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
 <div class="app-shell">
-  <header class="app-header">
-    <div class="app-logo">
-      wowref
-      <div class="logo-sub">Hello, world.</div>
-    </div>
+
+  <header class="app-header glass">
+    <div class="app-logo">wowref</div>
   </header>
 
   <main class="app-main">
-    <p id="hello" class="muted">Loading…</p>
+    <section class="card glass">
+      <h1>Hello, world.</h1>
+      <p class="muted">Mobile-first scaffold with a liquid glass tab bar. Tap the tabs below to switch screens.</p>
+    </section>
+
+    <section class="card glass" id="screen-content">
+      <h2 id="screen-title">Home</h2>
+      <p class="muted" id="screen-body">This is the home tab. Replace me with real content.</p>
+    </section>
   </main>
+
+  <!-- Bottom tab bar — liquid glass style -->
+  <nav class="tab-bar glass" role="tablist" aria-label="Primary">
+    <button class="tab active" role="tab" data-tab="home" aria-selected="true">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z" fill="currentColor"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="tab" role="tab" data-tab="browse" aria-selected="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v3H4zm0 5.5h16v3H4zm0 5.5h16v3H4z" fill="currentColor"/></svg>
+      <span>Browse</span>
+    </button>
+    <button class="tab" role="tab" data-tab="search" aria-selected="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 3a7.5 7.5 0 0 1 5.92 12.08l4.25 4.25-1.41 1.41-4.25-4.25A7.5 7.5 0 1 1 10.5 3m0 2a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11" fill="currentColor"/></svg>
+      <span>Search</span>
+    </button>
+    <button class="tab" role="tab" data-tab="more" aria-selected="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/><circle cx="19" cy="12" r="2" fill="currentColor"/></svg>
+      <span>More</span>
+    </button>
+  </nav>
+
 </div>
 
 <script type="module" src="js/app.js"></script>

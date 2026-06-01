@@ -1,12 +1,23 @@
 :root {
-  --bg: #0f1419;
-  --surface: #1a2028;
-  --border: #2a323d;
-  --text: #e6edf3;
-  --text-secondary: #9aa6b2;
-  --accent: #f4c430;
-  --font-display: system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-body: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --text: #f2f4f8;
+  --text-secondary: rgba(242, 244, 248, 0.68);
+  --accent: #ffd166;
+
+  /* Glass tokens */
+  --glass-bg: rgba(255, 255, 255, 0.10);
+  --glass-bg-strong: rgba(255, 255, 255, 0.14);
+  --glass-border: rgba(255, 255, 255, 0.22);
+  --glass-border-bottom: rgba(0, 0, 0, 0.35);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+  --glass-inset: inset 0 1px 0 rgba(255, 255, 255, 0.35),
+                 inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+
+  --tab-bar-height: 64px;
+  --radius-lg: 22px;
+  --radius-md: 16px;
+
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", system-ui, sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -14,44 +25,221 @@
 html, body {
   margin: 0;
   padding: 0;
-  background: var(--bg);
+  min-height: 100dvh;
   color: var(--text);
   font-family: var(--font-body);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.5;
-  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+
+  /* Dark base — gradient blobs sit on top of this */
+  background: #0a0e1a;
+  background-image:
+    radial-gradient(at 0% 0%, #1a2244 0%, transparent 50%),
+    radial-gradient(at 100% 100%, #2a1230 0%, transparent 50%);
+  background-attachment: fixed;
+  overflow-x: hidden;
 }
 
+/* ── Background blobs (visual complexity behind glass) ─────────── */
+.bg-blobs {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.55;
+  will-change: transform;
+  animation: blob-drift 22s ease-in-out infinite alternate;
+}
+
+.blob-1 {
+  width: 380px; height: 380px;
+  top: -80px; left: -80px;
+  background: radial-gradient(circle, #4f7cff 0%, transparent 70%);
+}
+
+.blob-2 {
+  width: 420px; height: 420px;
+  top: 30%; right: -120px;
+  background: radial-gradient(circle, #ff5ea0 0%, transparent 70%);
+  animation-delay: -7s;
+}
+
+.blob-3 {
+  width: 360px; height: 360px;
+  bottom: -120px; left: 20%;
+  background: radial-gradient(circle, #ffd166 0%, transparent 70%);
+  animation-delay: -14s;
+}
+
+@keyframes blob-drift {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(40px, -30px, 0) scale(1.1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blob { animation: none; }
+}
+
+/* ── Glass primitive ──────────────────────────────────────────── */
+.glass {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-bottom-color: var(--glass-border-bottom);
+  box-shadow: var(--glass-shadow), var(--glass-inset);
+  transform: translateZ(0);
+}
+
+/* Fallback if backdrop-filter unsupported */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: rgba(20, 24, 40, 0.85);
+  }
+}
+
+/* ── App shell ────────────────────────────────────────────────── */
 .app-shell {
-  max-width: 960px;
+  max-width: 720px;
   margin: 0 auto;
-  padding: 24px;
+  padding:
+    calc(env(safe-area-inset-top) + 12px)
+    max(env(safe-area-inset-right), 16px)
+    calc(var(--tab-bar-height) + env(safe-area-inset-bottom) + 32px)
+    max(env(safe-area-inset-left), 16px);
+  min-height: 100dvh;
 }
 
+/* ── Header ───────────────────────────────────────────────────── */
 .app-header {
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 16px;
-  margin-bottom: 24px;
+  border-radius: var(--radius-lg);
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  position: sticky;
+  top: calc(env(safe-area-inset-top) + 8px);
+  z-index: 10;
 }
 
 .app-logo {
   font-family: var(--font-display);
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--accent);
 }
 
-.logo-sub {
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--text-secondary);
-  margin-top: 2px;
+/* ── Cards ────────────────────────────────────────────────────── */
+.app-main {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.app-main {
-  padding: 16px 0;
+.card {
+  border-radius: var(--radius-lg);
+  padding: 20px;
 }
+
+.card h1, .card h2 {
+  font-family: var(--font-display);
+  margin: 0 0 8px;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+.card h1 { font-size: 26px; }
+.card h2 { font-size: 20px; }
+
+.card p { margin: 0; }
 
 .muted {
   color: var(--text-secondary);
+}
+
+/* ── Bottom tab bar ───────────────────────────────────────────── */
+.tab-bar {
+  position: fixed;
+  left: max(env(safe-area-inset-left), 12px);
+  right: max(env(safe-area-inset-right), 12px);
+  bottom: calc(env(safe-area-inset-bottom) + 10px);
+  height: var(--tab-bar-height);
+  display: flex;
+  align-items: stretch;
+  justify-content: space-around;
+  padding: 6px;
+  border-radius: 28px;
+  z-index: 100;
+
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 4px 6px;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 20px;
+  transition: color 180ms ease, background 180ms ease, transform 120ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tab svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.tab:active {
+  transform: scale(0.94);
+}
+
+.tab.active {
+  color: var(--text);
+  background: var(--glass-bg-strong);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.30),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.18);
+}
+
+.tab.active::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+}
+
+.tab {
+  position: relative;
+}
+
+/* ── Larger screens ───────────────────────────────────────────── */
+@media (min-width: 720px) {
+  .card h1 { font-size: 30px; }
+  .card { padding: 24px; }
 }
