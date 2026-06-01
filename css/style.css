@@ -301,6 +301,33 @@ button { font: inherit; }
 .th-green  { color: var(--c-green);  }
 .th-gray   { color: var(--c-gray);   }
 
+/* Calculator row (skinning entry) */
+.row-calc { gap: 10px; }
+.row-calc .row-icon {
+  flex: 0 0 auto;
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--glass-bg-strong);
+  border-radius: 10px;
+  color: var(--class-accent);
+}
+.row-calc .row-icon svg { width: 20px; height: 20px; }
+
+/* Mob level → required skill table */
+.lvl-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0 10px; }
+.lvl-col  { display: flex; flex-direction: column; }
+.lvl-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 4px 2px;
+  font-variant-numeric: tabular-nums;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.lvl-row:last-child { border-bottom: 0; }
+.lvl-n     { color: var(--text-secondary); font-size: 12px; }
+.lvl-skill { font-weight: 700; color: var(--class-accent); font-size: 13px; }
+
 /* Weapon master card */
 .wm-head { display: flex; align-items: baseline; gap: 8px; }
 .wm-name { font-family: var(--font-display); font-size: 17px; font-weight: 700; letter-spacing: -0.01em; color: var(--class-accent); }

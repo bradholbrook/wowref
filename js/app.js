@@ -143,7 +143,18 @@ function renderProfession(profId, materialId) {
 
   if (!materialId) {
     title.textContent = PROF_LABEL[profId];
+    const calcRow = profId === 'skinning' ? `
+      <a class="row row-calc" href="#/profession/skinning/calculator">
+        <span class="row-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="7" y="6" width="10" height="3" rx="1" fill="currentColor"/><circle cx="8.5" cy="13" r="1.1" fill="currentColor"/><circle cx="12" cy="13" r="1.1" fill="currentColor"/><circle cx="15.5" cy="13" r="1.1" fill="currentColor"/><circle cx="8.5" cy="17" r="1.1" fill="currentColor"/><circle cx="12" cy="17" r="1.1" fill="currentColor"/><circle cx="15.5" cy="17" r="1.1" fill="currentColor"/></svg>
+        </span>
+        <span class="row-title">Skill → Mob Level</span>
+        <span class="row-meta muted">calculator</span>
+        <span class="row-chev">›</span>
+      </a>
+    ` : '';
     root.innerHTML = `
+      ${calcRow}
       <ul class="list">
         ${data.map(m => `
           <li>
@@ -158,6 +169,10 @@ function renderProfession(profId, materialId) {
     return;
   }
 
+  if (profId === 'skinning' && materialId === 'calculator') {
+    return renderSkinningCalc();
+  }
+
   const mat = data.find(m => m.id === materialId);
   if (!mat) { root.innerHTML = '<p class="muted">Not found.</p>'; return; }
   title.textContent = mat.name;
@@ -169,6 +184,35 @@ function renderProfession(profId, materialId) {
     <section class="card glass">
       <div class="card-label">Zones</div>
       ${zoneChips(mat.zones)}
+    </section>
+  `;
+}
+
+// ── Skinning skill table ────────────────────────────────────────
+function skinReqSkill(level) {
+  if (level <= 10) return 1;
+  if (level <= 20) return (level - 10) * 10;
+  return level * 5;
+}
+
+function renderSkinningCalc() {
+  title.textContent = 'Skill → Mob Level';
+  const cell = (L) => `<div class="lvl-row"><span class="lvl-n">${L}</span><span class="lvl-skill">${skinReqSkill(L)}</span></div>`;
+  const col = (start) => Array.from({ length: 20 }, (_, i) => cell(start + i)).join('');
+  const cols = [1, 21, 41, 61].map(s => `<div class="lvl-col">${col(s)}</div>`).join('');
+
+  root.innerHTML = `
+    <section class="card glass">
+      <div class="card-label">Formula</div>
+      <p class="muted" style="margin:0;">
+        Skill ≤ 100: max mob level = skill ÷ 10 + 10<br/>
+        Skill &gt; 100: max mob level = skill ÷ 5
+      </p>
+    </section>
+
+    <section class="card glass">
+      <div class="card-label">Mob level → required skill</div>
+      <div class="lvl-cols">${cols}</div>
     </section>
   `;
 }
